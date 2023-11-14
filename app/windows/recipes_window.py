@@ -1,10 +1,10 @@
 from tkinter import Toplevel
-from widgets.ingredients_widgets import ingredients_frame
-from database.models.ingredients_db_logic import connect_db, disconnect_db, create_ingredients_table
+from widgets.recipes_widgets import recipes_frame
+from database.models.recipes_db_logic import connect_db, disconnect_db, create_recipes_table
 
-def ingredients_window(root_main = None):
+def recipes_window(root_main = None):
        root_main= Toplevel(root_main)
-       root_main.title('Ingredientes - Levu Confeitaria')
+       root_main.title('Receitas - Levu Confeitaria')
        root_main.configure(bg="#ED82AE")
        root_main.geometry("1200x720+180+10")
        root_main.resizable(True, True)
@@ -15,9 +15,9 @@ def ingredients_window(root_main = None):
        root_main.focus_force()
        root_main.grab_set()
 
-       ingredients_frame(root_main)
+       recipes_frame(root_main)
   
 conn, cursor = connect_db()
-create_ingredients_table(conn, cursor)
+create_recipes_table(conn, cursor)
 disconnect_db(conn)
 

@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import Frame, Label, Entry, Button, StringVar, OptionMenu, ttk
-from widgets.functions import clean_fields, on_double_click
-from database.controllers.ingredients_controller import add_ingredients, select_ingredients, delete_ingredients
+from widgets.functions import ingredients_clean_fields, ingredients_on_double_click
+from database.controllers.ingredients_controller import add_ingredients, select_ingredients ,search_ingredients ,update_ingredients , delete_ingredients
 lb_code = None
 lb_product = None
 lb_price = None
@@ -22,16 +22,16 @@ def model_create_button(parent, text, x, y, command=None):
     return button
 
 def create_buttons(frame):
-    bt_search_ingredients = model_create_button(frame, 'Buscar', 0.1, 0.4)
-    bt_clear_ingredients = model_create_button(frame, 'Limpar', 0.9, 0.2, command=lambda: clean_fields(lb_code, lb_product, lb_price, lb_quantity, Tipvar))
-    bt_save_ingredients = model_create_button(frame, 'Adicionar', 0.82, 0.6, command=lambda: add_ingredients(lb_code, lb_product, lb_price, lb_quantity, Tipvar, ingredients_list))
-    bt_edit_ingredients = model_create_button(frame, 'Editar', 0.82, 0.2)
-    bt_delete_ingredients = model_create_button(frame, 'Excluir', 0.9, 0.6,command=lambda: delete_ingredients(lb_code, lb_product, lb_price, lb_quantity, Tipvar, ingredients_list))
+    bt_search_ingredients = model_create_button(frame, 'Buscar', 0.72, 0.4,command=lambda: search_ingredients(lb_code, lb_product, lb_price, lb_quantity, Tipvar, ingredients_list))
+    bt_clear_ingredients = model_create_button(frame, 'Limpar', 0.9, 0.2, command=lambda: ingredients_clean_fields(lb_code, lb_product, lb_price, lb_quantity, Tipvar))
+    bt_save_ingredients = model_create_button(frame, 'Adicionar', 0.82, 0.6, command=lambda: add_ingredients(frame, lb_code, lb_product, lb_price, lb_quantity, Tipvar, ingredients_list))
+    bt_edit_ingredients = model_create_button(frame, 'Editar', 0.82, 0.2,command=lambda: update_ingredients(frame, lb_code, lb_product, lb_price, lb_quantity, Tipvar, ingredients_list))
+    bt_delete_ingredients = model_create_button(frame, 'Excluir', 0.9, 0.6,command=lambda: delete_ingredients(frame, lb_code, lb_product, lb_price, lb_quantity, Tipvar, ingredients_list))
 
 def create_labels_and_entries(frame):
     global lb_code, lb_product, lb_price, lb_quantity 
     lb_code = model_create_label_entry(frame, 'Código', 0.03, 0.25, 65, 30, is_bold=True)
-    lb_product = model_create_label_entry(frame, 'Produto', 0.22, 0.25, 150, 30, is_bold=True)
+    lb_product = model_create_label_entry(frame, 'Produto', 0.14, 0.25, 250, 30, is_bold=True)
     lb_price = model_create_label_entry(frame, 'Preço', 0.40, 0.25, 65, 30, is_bold=True)
     lb_quantity = model_create_label_entry(frame, 'Qtd', 0.50, 0.25, 65, 30, is_bold=True)
 
@@ -52,6 +52,9 @@ def configure_estyle_treeview(treeview):
     
     treeview.configure(style="Treeview.Treeview")
 
+def format_quantity(value):
+    return str(int(value))
+
 def create_ingredients_list(frame):
     global ingredients_list
     ingredients_list = ttk.Treeview(frame, columns=('col0', 'col1', 'col2', 'col3', 'col4', 'col5','col6'))
@@ -69,16 +72,15 @@ def create_ingredients_list(frame):
     ingredients_list.column('#4', width=180, anchor='center')
     ingredients_list.column('#5', width=180, anchor='center')
     ingredients_list.column('#6', width=200, anchor='center')
-    ingredients_list.place(relx=0.01, rely=0.1, relwidth=0.98, relheight=0.95)
-
+    ingredients_list.place(relx=0.01, rely=0.02, relwidth=0.98, relheight=0.96)
+    
     scroll_list = ttk.Scrollbar(frame, orient='vertical')
     ingredients_list.configure(yscrollcommand=scroll_list.set)
     scroll_list.config(command=ingredients_list.yview)
     scroll_list.place(relx=0.98, rely=0.1, relheight=0.85, width=20)
-    ingredients_list.bind("<Double-1>", lambda event: on_double_click(lb_code, lb_product, lb_price, lb_quantity, Tipvar, ingredients_list))
+    ingredients_list.bind("<Double-1>", lambda event: ingredients_on_double_click(lb_code, lb_product, lb_price, lb_quantity, Tipvar, ingredients_list))
     select_ingredients(ingredients_list)
     configure_estyle_treeview(ingredients_list)
-
 
 def ingredients_frame(parent):
     register_frame_ingredients = Frame(parent)
